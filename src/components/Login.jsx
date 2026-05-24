@@ -1,97 +1,68 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // ייבוא ספריית אקסיוס שמתקשרת עם השרת
+import axios from 'axios';
 
-function Register() {
-  // הגדרת משתני מצב (State) התואמים לשדות של ה-EmployeeRegisterDTO בשרת
-  const [name, setName] = useState('');
+// קבלת ה-onNavigate כחלק מהפרמטרים של הקומפוננטה
+function Login({ onNavigate }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  const [message, setMessage] = useState(''); // הודעת הצלחה
-  const [errorMessage, setErrorMessage] = useState(''); // הודעת שגיאה
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-    setMessage('');
+    setSuccessMessage('');
 
     try {
-      // שליחת בקשת POST לנקודת הקצה של ההרשמה ב-Backend של Spring Boot
-      const response = await axios.post('http://localhost:8080/api/employees/register', {
-        name: name,
+      const response = await axios.post('http://localhost:8080/api/employees/login', {
         email: email,
         password: password
       });
 
-      console.log("ההרשמה הצליחה! תשובת השרת:", response.data);
-      setMessage("העובד נרשם במערכת בהצלחה! 🎉");
+      const loggedInEmployee = response.data;
+      localStorage.setItem('user', JSON.stringify(loggedInEmployee));
+      setSuccessMessage(`ברוך הבא, ${loggedInEmployee.name}! התחברת בהצלחה.`);
       
-      // איפוס השדות לאחר הצלחה
-      setName('');
-      setEmail('');
-      setPassword('');
-
     } catch (error) {
-      console.error("שגיאה בתהליך ההרשמה:", error);
       if (error.response && error.response.data) {
-        setErrorMessage(error.response.data.message || "נכשל ברישום העובד. נסה שוב.");
+        setErrorMessage(error.response.data.message || "פרטי התחברות שגויים");
       } else {
-        setErrorMessage("שגיאת תקשורת עם השרת. ודא ששרת הג'אווה רץ!");
+        setErrorMessage("שגיאת תקשורת עם השרת. ודא שה-Backend רץ!");
       }
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '100px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px', fontFamily: 'Arial', textAlign: 'center' }}>
-      <h2>הרשמת עובד חדש ל-WorkBoost</h2>
+    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px', fontFamily: 'Arial', textAlign: 'center' }}>
+      <h2>התחברות ל-WorkBoost</h2>
       
-      {/* הצגת הודעות למשתמש */}
-      {message && <div style={{ color: 'green', marginBottom: '15px', fontWeight: 'bold' }}>{message}</div>}
+      {successMessage && <div style={{ color: 'green', marginBottom: '15px', fontWeight: 'bold' }}>{successMessage}</div>}
       {errorMessage && <div style={{ color: 'red', marginBottom: '15px', fontWeight: 'bold' }}>{errorMessage}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        {/* שדה שם - נחוץ עבור הרשמה */}
-        <div style={{ marginBottom: '15px', textAlign: 'right' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>שם מלא:</label>
-          <input 
-            type="text" 
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required 
-            style={{ width: '100%', padding: '8px', boxSizing: 'border-box', borderRadius: '4px', border: '1px solid #aaa' }}
-          />
-        </div>
 
-        {/* שדה אימייל */}
+      <form onSubmit={handleLogin}>
+        {/* שדות הקלט אימייל וסיסמה נשארים אותו דבר... */}
         <div style={{ marginBottom: '15px', textAlign: 'right' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>אימייל:</label>
-          <input 
-            type="email" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required 
-            style={{ width: '100%', padding: '8px', boxSizing: 'border-box', borderRadius: '4px', border: '1px solid #aaa' }}
-          />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #aaa' }} />
         </div>
-
-        {/* שדה סיסמה */}
         <div style={{ marginBottom: '20px', textAlign: 'right' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>סיסמה:</label>
-          <input 
-            type="password" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required 
-            style={{ width: '100%', padding: '8px', boxSizing: 'border-box', borderRadius: '4px', border: '1px solid #aaa' }}
-          />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #aaa' }} />
         </div>
 
-        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' }}>
-          בצע הרשמה
+        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' }}>
+          התחבר
         </button>
       </form>
+
+      {/* 🔥 כפתור המעבר להרשמה עובדים חדשים */}
+      <hr style={{ margin: '20px 0', borderColor: '#eee' }} />
+      <p style={{ fontSize: '14px' }}>עובד חדש במערכת?</p>
+      <button onClick={onNavigate} style={{ background: 'none', border: 'none', color: '#007BFF', textDecoration: 'underline', cursor: 'pointer', fontSize: '14px' }}>
+        לחץ כאן כדי לבצע הרשמה
+      </button>
     </div>
   );
 }
 
-export default Register;
+export default Login;
