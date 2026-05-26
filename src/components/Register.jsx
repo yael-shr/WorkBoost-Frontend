@@ -42,12 +42,10 @@ function Register({ onNavigate }) {
     <div style={{ maxWidth: '400px', margin: '100px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px', fontFamily: 'Arial', textAlign: 'center' }}>
       <h2>הרשמת עובד חדש ל-WorkBoost</h2>
       
-      {/* הצגת הודעות למשתמש */}
       {message && <div style={{ color: 'green', marginBottom: '15px', fontWeight: 'bold' }}>{message}</div>}
       {errorMessage && <div style={{ color: 'red', marginBottom: '15px', fontWeight: 'bold' }}>{errorMessage}</div>}
       
       <form onSubmit={handleSubmit}>
-        {/* שדה שם - נחוץ עבור הרשמה */}
         <div style={{ marginBottom: '15px', textAlign: 'right' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>שם מלא:</label>
           <input 
@@ -59,7 +57,6 @@ function Register({ onNavigate }) {
           />
         </div>
 
-        {/* שדה אימייל */}
         <div style={{ marginBottom: '15px', textAlign: 'right' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>אימייל:</label>
           <input 
@@ -71,7 +68,6 @@ function Register({ onNavigate }) {
           />
         </div>
 
-        {/* שדה סיסמה */}
         <div style={{ marginBottom: '20px', textAlign: 'right' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>סיסמה:</label>
           <input 

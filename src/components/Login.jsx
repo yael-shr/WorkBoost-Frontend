@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-// קבלת ה-onNavigate כחלק מהפרמטרים של הקומפוננטה
 function Login({ onNavigate, onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,13 +18,11 @@ function Login({ onNavigate, onLoginSuccess }) {
         password: password
       });
 
-      // שמירת אובייקט המשתמש שהתקבל מהג'אווה בזיכרון הדפדפן
       const loggedInEmployee = response.data;
       localStorage.setItem('user', JSON.stringify(loggedInEmployee));
       
       setSuccessMessage(`ברוך הבא, ${loggedInEmployee.name}! התחברת בהצלחה.`);
       
-      // 2. 🔥 הפעלת הפונקציה שמחליפה את המסך ל-'shop' ב-App.jsx באופן מיידי!
       if (onLoginSuccess) {
         onLoginSuccess();
       }
@@ -47,7 +44,6 @@ function Login({ onNavigate, onLoginSuccess }) {
       {errorMessage && <div style={{ color: 'red', marginBottom: '15px', fontWeight: 'bold' }}>{errorMessage}</div>}
 
       <form onSubmit={handleLogin}>
-        {/* שדות הקלט אימייל וסיסמה נשארים אותו דבר... */}
         <div style={{ marginBottom: '15px', textAlign: 'right' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>אימייל:</label>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #aaa' }} />
@@ -62,7 +58,6 @@ function Login({ onNavigate, onLoginSuccess }) {
         </button>
       </form>
 
-      {/* 🔥 כפתור המעבר להרשמה עובדים חדשים */}
       <hr style={{ margin: '20px 0', borderColor: '#eee' }} />
       <p style={{ fontSize: '14px' }}>עובד חדש במערכת?</p>
       <button onClick={onNavigate} style={{ background: 'none', border: 'none', color: '#007BFF', textDecoration: 'underline', cursor: 'pointer', fontSize: '14px' }}>

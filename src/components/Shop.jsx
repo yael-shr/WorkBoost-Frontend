@@ -6,12 +6,10 @@ function Shop() {
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // ניהול המשתמש המחובר כ-State דינמי
   const [currentUser, setCurrentUser] = useState(() => {
     return JSON.parse(localStorage.getItem('user'));
   });
 
-  // טעינת רשימת המתנות ונתוני המשתמש העדכניים לפי אימייל בכל עליית מסך
   useEffect(() => {
     const fetchShopData = async () => {
       try {
@@ -34,7 +32,6 @@ function Shop() {
     fetchShopData();
   }, []);
 
-  // פונקציית רכישת מתנה אוטומטית ומסונכרנת
   const handleBuyGift = async (giftId) => {
     setErrorMessage('');
     setMessage('');
@@ -45,7 +42,6 @@ function Shop() {
     }
 
     try {
-      // שליחת בקשת הרכישה לשרת
       const response = await axios.post('http://localhost:8080/api/gifts/buy', {
         employeeId: currentUser.id,
         giftId: giftId
@@ -53,12 +49,10 @@ function Shop() {
 
       setMessage("הקנייה בוצעה בהצלחה! פנק את עצמך! 🎁");
 
-      // קבלת אובייקט העובד העדכני שהשרת שלח בחזרה (כולל בונוסים וניקוד אמיתי מה-DB)
       const serverUpdatedUser = response.data;
       localStorage.setItem('user', JSON.stringify(serverUpdatedUser));
       setCurrentUser(serverUpdatedUser);
 
-      // ריענון המלאי של המתנות בחנות
       const giftsResponse = await axios.get('http://localhost:8080/api/gifts');
       setGifts(giftsResponse.data);
 
@@ -79,7 +73,6 @@ function Shop() {
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 20px', fontFamily: 'var(--sans)', direction: 'rtl' }}>
       
-      {/* 🌟 באנר עליון חגיגי ומזמין */}
       <div style={{ 
         background: 'linear-gradient(135deg, var(--accent) 0%, #7928ca 100%)', 
         color: 'white', 
@@ -96,7 +89,6 @@ function Shop() {
           <p style={{ fontSize: '18px', opacity: 0.9, margin: 0 }}>הפוך את ההשקעה והמשימות שביצעת למתנות שוות!</p>
         </div>
         
-        {/* תצוגת פרופיל וניקוד מעוצבת בתוך הבאנר */}
         {currentUser && (
           <div style={{ 
             backgroundColor: 'rgba(255, 255, 255, 0.15)', 
@@ -118,7 +110,6 @@ function Shop() {
         )}
       </div>
 
-      {/* 🔔 מיכל הודעות מערכת דינמיות */}
       {message && (
         <div style={{ color: '#155724', backgroundColor: '#d4edda', border: '1px solid #c3e6cb', padding: '15px', borderRadius: '12px', marginBottom: '25px', fontWeight: 'bold', fontSize: '16px', textAlign: 'right' }}>
           ✅ {message}
@@ -130,7 +121,6 @@ function Shop() {
         </div>
       )}
 
-      {/* 🛒 רשת כרטיסיות מוצרים (Products Grid) */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '30px', marginTop: '20px' }}>
         {gifts && gifts.length > 0 ? (
           gifts.map((gift) => (
@@ -158,7 +148,6 @@ function Shop() {
               }}
             >
               <div>
-                {/* תגית מחיר מעוצבת בפינת הכרטיסייה */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                   <span style={{ 
                     backgroundColor: 'var(--accent-bg)', 
