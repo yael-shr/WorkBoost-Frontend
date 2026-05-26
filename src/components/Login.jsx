@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 // קבלת ה-onNavigate כחלק מהפרמטרים של הקומפוננטה
-function Login({ onNavigate }) {
+function Login({ onNavigate, onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -19,11 +19,19 @@ function Login({ onNavigate }) {
         password: password
       });
 
+      // שמירת אובייקט המשתמש שהתקבל מהג'אווה בזיכרון הדפדפן
       const loggedInEmployee = response.data;
       localStorage.setItem('user', JSON.stringify(loggedInEmployee));
+      
       setSuccessMessage(`ברוך הבא, ${loggedInEmployee.name}! התחברת בהצלחה.`);
       
+      // 2. 🔥 הפעלת הפונקציה שמחליפה את המסך ל-'shop' ב-App.jsx באופן מיידי!
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
+      
     } catch (error) {
+      console.error("שגיאה בהתחברות:", error);
       if (error.response && error.response.data) {
         setErrorMessage(error.response.data.message || "פרטי התחברות שגויים");
       } else {
@@ -31,7 +39,6 @@ function Login({ onNavigate }) {
       }
     }
   };
-
   return (
     <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px', fontFamily: 'Arial', textAlign: 'center' }}>
       <h2>התחברות ל-WorkBoost</h2>
