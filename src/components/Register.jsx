@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // ייבוא ספריית אקסיוס שמתקשרת עם השרת
+import axios from 'axios'; 
 
 function Register({ onNavigate }) {
-  // הגדרת משתני מצב (State) התואמים לשדות של ה-EmployeeRegisterDTO בשרת
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  const [message, setMessage] = useState(''); // הודעת הצלחה
-  const [errorMessage, setErrorMessage] = useState(''); // הודעת שגיאה
+  const [message, setMessage] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +15,6 @@ function Register({ onNavigate }) {
     setMessage('');
 
     try {
-      // שליחת בקשת POST לנקודת הקצה של ההרשמה ב-Backend של Spring Boot
       const response = await axios.post('http://localhost:8080/api/employees/register', {
         name: name,
         email: email,
@@ -26,7 +24,6 @@ function Register({ onNavigate }) {
       console.log("ההרשמה הצליחה! תשובת השרת:", response.data);
       setMessage("העובד נרשם במערכת בהצלחה! 🎉");
       
-      // איפוס השדות לאחר הצלחה
       setName('');
       setEmail('');
       setPassword('');
