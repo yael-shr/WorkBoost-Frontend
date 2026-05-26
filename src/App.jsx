@@ -1,19 +1,38 @@
 import React, { useState } from 'react';
 import Login from './components/Login';
-import Register from './components/Register'; // נוודא שקובץ הרישום קיים בשם זה
+import Register from './components/Register';
+import Shop from './components/Shop'; // ייבוא מסך החנות החדש
 
 function App() {
-  // משתנה מצב שמנהל איזה דף מוצג כרגע (ברירת המחדל היא דף הלוגין)
-  const [currentPage, setCurrentPage] = useState('login');
+  // בדיקה ראשונית: האם יש כבר משתמש מחובר בזיכרון?
+  const hasUser = localStorage.getItem('user') !== null;
+  const [currentPage, setCurrentPage] = useState(hasUser ? 'shop' : 'login');
 
   return (
     <div>
-      {currentPage === 'login' ? (
-        // אם הדף הנוכחי הוא לוגין, נציג אותו ונעביר לו פונקציה למעבר להרשמה
-        <Login onNavigate={() => setCurrentPage('register')} />
-      ) : (
-        // אם הדף הנוכחי הוא הרשמה, נציג אותו ונעביר לו פונקציה למעבר חזרה ללוגין
+      {/* כפתור התנתקות פשוט שיופיע רק אם המשתמש בחנות */}
+      {currentPage === 'shop' && (
+        <button 
+          onClick={() => { localStorage.removeItem('user'); setCurrentPage('login'); }}
+          style={{ margin: '10px', padding: '5px 10px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', float: 'left' }}
+        >
+          התנתק 🏃‍♂️
+        </button>
+      )}
+
+      {currentPage === 'login' && (
+     <Login 
+    onNavigate={() => setCurrentPage('register')} 
+    onLoginSuccess={() => setCurrentPage('shop')} // ⚡ השורה החשובה!
+    />
+    )}
+      
+      {currentPage === 'register' && (
         <Register onNavigate={() => setCurrentPage('login')} />
+      )}
+
+      {currentPage === 'shop' && (
+        <Shop />
       )}
     </div>
   );
